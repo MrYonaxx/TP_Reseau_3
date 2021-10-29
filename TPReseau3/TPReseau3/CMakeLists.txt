@@ -4,6 +4,6 @@
 cmake_minimum_required (VERSION 3.8)
 
 # Ajoutez une source à l'exécutable de ce projet.
-add_executable (TPReseau3 "TPReseau3.cpp" "TPReseau3.h")
+add_executable (TPReseau3 "TPReseau3.cpp" "TPReseau3.h" "LinkingContext.h" "LinkingContext.h")
 
 # TODO: Ajoutez des tests et installez des cibles si nécessaire.
