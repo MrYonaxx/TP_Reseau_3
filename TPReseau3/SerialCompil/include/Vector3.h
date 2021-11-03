@@ -10,8 +10,7 @@ struct Vector3<T>
 #include "Serializer.h"
 #include "Deserializer.h"
 
-namespace uqac::serializer
-{
+
 	struct Vector3
 	{
 	public:
@@ -35,6 +34,8 @@ namespace uqac::serializer
 
 	};
 
+	namespace uqac::serializer
+	{
 	class Vector3Compressor
 	{
 

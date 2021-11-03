@@ -1,14 +1,17 @@
 #include "GameObject.h"
 
-void uqac::replication::GameObject::Write(uqac::serializer::Serializer)
+namespace uqac::replication 
 {
+	void GameObject::Write(Serializer& serializer)
+	{
 
-}
+	}
 
-void uqac::replication::GameObject::Read(uqac::serializer::Deserializer)
-{
-}
+	void GameObject::Read(Deserializer& deserializer)
+	{
+	}
 
-void uqac::replication::GameObject::Destroy()
-{
+	void GameObject::Destroy()
+	{
+	}
 }

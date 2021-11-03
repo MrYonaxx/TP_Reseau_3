@@ -1,29 +1,44 @@
 #pragma once
 #include <string>
 
-#include "SerialCompil/include/Deserializer.h"
-#include "SerialCompil/include/Serializer.h"
-#include "SerialCompil/include/Vector3.h"
-#include "SerialCompil/include/Quaternion.h"
-
-
+#include "GameObject.h"
+#include "Deserializer.h"
+#include "Serializer.h"
+#include "Vector3.h"
+#include "Quaternion.h"
 
 using namespace uqac::replication;
 
-enum type
+namespace uqac::networkGame 
 {
-	Boss = 1;
-	Sbire = 2;
-};
+	enum class EnemyTpe
+	{
+		Boss = 1,
+		Sbire = 2,
+	};
 
-class Enemy
-{
+	class Enemy : public GameObject
+	{
 
-public:
+	public:
+		Enemy();
 
-	Vector3 position; // 3 de précision et -500 500 ; -500 500 ; 0 100
-	Quaternion rotation;
+		void Reset();
+		void Display();
 
-	int life;
+		void Write(Serializer&) override;
+		void Read(Deserializer&) override;
+		void Destroy() override;
 
-};
+
+	// Variable
+	public:
+
+		Vector3 position; // 3 de précision et -500 500 ; -500 500 ; 0 100
+		Quaternion rotation;
+
+		EnemyTpe enemyType; // int entre 1 et 2
+		int life;
+
+	};
+}

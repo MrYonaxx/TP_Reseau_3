@@ -14,6 +14,10 @@ namespace uqac::replication
 		ClassRegistry() = default;
 		~ClassRegistry() = default;
 
+		static std::unique_ptr<ClassRegistry> Instance;
+		static ClassRegistry* GetInstance();
+		static void DestroyInstance();
+
 		template <typename T>
 		void RegisterClass(T id, std::function<GameObject*()> creationMethod);
 		GameObject* Create(ClassID id);

@@ -2,6 +2,8 @@
 #include "Serializer.h"
 #include "Deserializer.h"
 
+using namespace uqac::serializer;
+
 namespace uqac::replication
 {
 	enum ClassID
@@ -10,6 +12,7 @@ namespace uqac::replication
 		Enemy = 2,
 	};
 
+	// Ou network object
 	class GameObject
 	{
 	public:
@@ -17,10 +20,10 @@ namespace uqac::replication
 		GameObject() = default;
 		~GameObject() = default;
 
-		ClassID classID;
+		static ClassID classID;
 
-		virtual void Write(uqac::serializer::Serializer);
-		virtual void Read(uqac::serializer::Deserializer);
+		virtual void Write(Serializer&);
+		virtual void Read(Deserializer&);
 		virtual void Destroy();
 
 	};

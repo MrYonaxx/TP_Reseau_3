@@ -19,6 +19,7 @@ namespace uqac::replication
 		uqac::serializer::Serializer serializer;
 
 		void Update();
+		void Read();
 
 	};
 

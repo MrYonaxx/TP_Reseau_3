@@ -3,37 +3,43 @@
 
 namespace uqac::replication
 {
+	// Ajoute un gameobject et un networkID
 	void LinkingContext::AddGameObject(int val, GameObject* object)
 	{
-		GameObject1.insert(val, object);
-		GameObject2.insert(object, val);
+		GameObjectsID.insert(std::pair<int, GameObject*>(val, object));
+		GameObjects.insert(std::pair<GameObject*, int>(object, val));
 	};
 
 	void LinkingContext::DeleteGameObject(GameObject* object)
 	{
-		it = GameObject2.find(object);
-		GameObject1.erase(it);
-		GameObject2.erase(object);
+		int id = GameObjects[object];
+		GameObjectsID.erase(id);
+		GameObjects.erase(object);
 	};
 
+	// Ajoute un gameobject sans NetworkID
 	void LinkingContext::AddGameObject(GameObject* object)
 	{
-		it = GameObject2.end() + 1;
-		GameObject1.insert(it, object);
-		GameObject.insert(object, it);
+		// Crée un network ID
+		networkID++;
+		AddGameObject(networkID, object);
 	};
 
 	std::optional<int> LinkingContext::getObject1(GameObject* object)
 	{
-		it = GameObject2.find(object);
-
-		return it;
+		if (GameObjects.count(object)) 
+		{
+			return GameObjects[object];
+		}
+		return {};
 	};
 
 	std::optional<GameObject*> LinkingContext::getObject1(int val)
 	{
-		it = GameObject1.find(val);
-
-		return it;
+		if (GameObjectsID.count(val))
+		{
+			return GameObjectsID[val];
+		}
+		return{};
 	}
 }

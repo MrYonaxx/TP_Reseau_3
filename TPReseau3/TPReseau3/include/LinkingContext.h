@@ -9,9 +9,10 @@ namespace uqac::replication
 	{
 	public:
 
-		 std::map<int, GameObject*> GameObject1;
-		 std::map<GameObject*, int> GameObject2;
-		 std::map<char, int>::iterator it;
+		 std::map<int, GameObject*> GameObjectsID;
+		 std::map<GameObject*, int> GameObjects;
+
+		 int networkID = 0; // Si y'a cafouillage sur les ID à cause du réseau à changer
 
 		 void AddGameObject(int val, GameObject* object);
 		 void DeleteGameObject(GameObject* object);
