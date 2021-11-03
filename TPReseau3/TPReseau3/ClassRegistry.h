@@ -1,13 +1,9 @@
 #pragma once
 #include <functional>
+#include "GameObject.h"
 
 namespace uqac::replication
 {
-	public enum ClassID
-	{
-		Player = 1,
-		Enemy = 2;
-	};
 
 	class ClassRegistry
 	{
@@ -16,13 +12,23 @@ namespace uqac::replication
 		ClassRegistry() = default;
 		~ClassRegistry() = default;
 
-		void RegisterClass(std::function<> creationMethod);
+		template <typename T>
+		void RegisterClass(T id, std::function<void()> creationMethod);
+
+
+
 		GameObject* Create(ClassID id);
 
 	private:
-		std::map<ClassID, std::function<>> classDatabase;
+		std::map<ClassID, std::function<void()>> classDatabase;
 
 
 	};
+
+	template<typename T>
+	inline void ClassRegistry::RegisterClass(T id, std::function<> creationMethod)
+	{
+
+	}
 
 }

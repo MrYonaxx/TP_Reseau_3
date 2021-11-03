@@ -1,4 +1,4 @@
-#include"LinkingContext.h"
+#include "LinkingContext.h"
 
 
 namespace uqac::replication
@@ -24,14 +24,14 @@ namespace uqac::replication
 		GameObject.insert(object, it);
 	};
 
-	std::optional<int val> getObject1(GameObject* object)
+	std::optional<int> getObject1(GameObject* object)
 	{
 		it = GameObject2.find(object);
 
 		return it;
 	};
 
-	std::optional<GameObject* object> getObject1(int val)
+	std::optional<GameObject*> getObject1(int val)
 	{
 		it = GameObject1.find(val);
 

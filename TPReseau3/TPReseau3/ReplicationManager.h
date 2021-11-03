@@ -1,7 +1,7 @@
 #pragma once
 #include "LinkingContext.h"
 #include "GameObject.h"
-#include <set>
+#include <unordered_set>
 
 namespace uqac::replication
 {

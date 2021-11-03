@@ -1,5 +1,6 @@
 #pragma once
-#include<map>
+#include <map>
+#include <optional>
 #include "GameObject.h"
 
 namespace uqac::replication 
@@ -8,16 +9,16 @@ namespace uqac::replication
 	{
 	public:
 
-		 std::map<int, *GameObject> GameObject1;
-		 std::map<*GameObject, int> GameObject2;
+		 std::map<int, GameObject*> GameObject1;
+		 std::map<GameObject*, int> GameObject2;
 		 std::map<char, int>::iterator it;
 
 		 void AddGameObject(int val, GameObject* object);
 		 void DeleteGameObject(GameObject* object);
 		 void AddGameObject(GameObject* object);
 
-		 std::optional<int val> getObject1(GameObject* object);
-		 std::optional<GameObject* object> getObject1(int val);
+		 std::optional<int> getObject1(GameObject* object);
+		 std::optional<GameObject*> getObject1(int val);
 
 	private:
 		
