@@ -1,5 +1,7 @@
 #pragma once
+
 #include <functional>
+#include <map>
 #include "GameObject.h"
 
 namespace uqac::replication
@@ -13,22 +15,20 @@ namespace uqac::replication
 		~ClassRegistry() = default;
 
 		template <typename T>
-		void RegisterClass(T id, std::function<void()> creationMethod);
-
-
-
+		void RegisterClass(T id, std::function<GameObject*()> creationMethod);
 		GameObject* Create(ClassID id);
 
 	private:
-		std::map<ClassID, std::function<void()>> classDatabase;
+		std::map<ClassID, std::function<GameObject*()>> classDatabase;
 
 
 	};
 
 	template<typename T>
-	inline void ClassRegistry::RegisterClass(T id, std::function<> creationMethod)
+	inline void ClassRegistry::RegisterClass(T id, std::function<GameObject*()> creationMethod)
 	{
-
+		ClassID c = static_cast<GameObject>(id)::classID;
+		classDatabase.insert(c, creationMethod);
 	}
 
 }
