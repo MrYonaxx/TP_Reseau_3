@@ -9,3 +9,5 @@ project ("TPReseau3")
 
 # Incluez les sous-projets.
 add_subdirectory ("TPReseau3")
+add_subdirectory ("NetworkLib")
+add_subdirectory ("SerialCompil")

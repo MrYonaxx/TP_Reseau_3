@@ -1,4 +1,6 @@
 #pragma once
+#include "Serializer.h"
+#include "Deserializer.h"
 
 namespace uqac::replication
 {
@@ -17,8 +19,8 @@ namespace uqac::replication
 
 		ClassID classID;
 
-		virtual void Write();
-		virtual void Read();
+		virtual void Write(uqac::serializer::Serializer);
+		virtual void Read(uqac::serializer::Deserializer);
 		virtual void Destroy();
 
 	};
