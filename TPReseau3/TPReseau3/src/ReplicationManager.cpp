@@ -6,6 +6,7 @@ namespace uqac::replication {
 		this->serializer = uqac::serializer::Serializer();
 	}
 
+	// Write
 	void ReplicationManager::Update()
 	{
 		for (auto elem : objectsReplicated) {
