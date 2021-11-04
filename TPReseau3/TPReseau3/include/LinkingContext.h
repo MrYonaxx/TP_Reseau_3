@@ -18,8 +18,8 @@ namespace uqac::replication
 		 void DeleteGameObject(GameObject* object);
 		 void AddGameObject(GameObject* object);
 
-		 std::optional<int> getObject1(GameObject* object);
-		 std::optional<GameObject*> getObject1(int val);
+		 std::optional<int> GetObject(GameObject* object);
+		 std::optional<GameObject*> GetObject(int val);
 
 	private:
 		

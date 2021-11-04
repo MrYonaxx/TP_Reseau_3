@@ -25,7 +25,7 @@ namespace uqac::replication
 		AddGameObject(networkID, object);
 	};
 
-	std::optional<int> LinkingContext::getObject1(GameObject* object)
+	std::optional<int> LinkingContext::GetObject(GameObject* object)
 	{
 		if (GameObjects.count(object)) 
 		{
@@ -34,7 +34,7 @@ namespace uqac::replication
 		return {};
 	};
 
-	std::optional<GameObject*> LinkingContext::getObject1(int val)
+	std::optional<GameObject*> LinkingContext::GetObject(int val)
 	{
 		if (GameObjectsID.count(val))
 		{

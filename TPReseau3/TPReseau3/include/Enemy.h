@@ -11,7 +11,7 @@ using namespace uqac::replication;
 
 namespace uqac::networkGame 
 {
-	enum class EnemyTpe
+	enum class EnemyTpe : uint8_t
 	{
 		Boss = 1,
 		Sbire = 2,

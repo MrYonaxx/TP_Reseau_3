@@ -19,8 +19,8 @@ namespace uqac::replication
 
 		uqac::serializer::Serializer serializer;
 
-		void Update();
-		void Read();
+		std::vector<char> Update(int protocol);
+		void Read(std::string buffer);
 
 	};
 

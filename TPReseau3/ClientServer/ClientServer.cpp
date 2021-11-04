@@ -42,10 +42,11 @@ void RemovePlayer(shared_ptr<Connection> newConnection)
 
 void SendDataToAll() 
 {
-	std::string dataSerialized;
+	std::vector<char> dataSerialized; // = replicationManager.Update();
+	std::string msg = std::string(dataSerialized.begin(), dataSerialized.end());
 	for (int i = 0; i < listConnection.size(); ++i)
 	{
-		listConnection[i]->Send(dataSerialized);
+		listConnection[i]->Send(msg);
 	}
 }
 
@@ -134,6 +135,7 @@ std::function<GameObject* ()> createPlayer;
 
 Enemy* CreateGameObjectEnemy()
 {
+
 	std::cout << "Pouet pouet";
 	return new Enemy();
 }
@@ -199,7 +201,7 @@ int main(int argc, char** argv) //usage: -ip [IP] -port [PORT] -protocole [0=TCP
 	// Enregistre les fonction pour créer les classes dans le Replication Manager
 	RegisterClasses();
 
-	ClassRegistry::GetInstance()->Create(ClassID::PlayerID);
+	//ClassRegistry::GetInstance()->Create(ClassID::PlayerID);
 	return 0;
 
 	if (answer == "0") {

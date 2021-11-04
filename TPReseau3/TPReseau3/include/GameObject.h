@@ -6,7 +6,7 @@ using namespace uqac::serializer;
 
 namespace uqac::replication
 {
-	enum class ClassID
+	enum class ClassID : uint8_t
 	{
 		PlayerID = 1,
 		EnemyID = 2,
