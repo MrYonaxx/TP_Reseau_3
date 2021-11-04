@@ -6,10 +6,10 @@ using namespace uqac::serializer;
 
 namespace uqac::replication
 {
-	enum ClassID
+	enum class ClassID
 	{
-		Player = 1,
-		Enemy = 2,
+		PlayerID = 1,
+		EnemyID = 2,
 	};
 
 	// Ou network object
@@ -20,7 +20,7 @@ namespace uqac::replication
 		GameObject() = default;
 		~GameObject() = default;
 
-		static ClassID classID;
+		ClassID classID;
 
 		virtual void Write(Serializer&);
 		virtual void Read(Deserializer&);

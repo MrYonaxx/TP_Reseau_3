@@ -2,10 +2,13 @@
 
 namespace uqac::replication 
 {
+    std::unique_ptr<ClassRegistry> ClassRegistry::Instance = 0;
 
 	GameObject* ClassRegistry::Create(ClassID id)
 	{
-		return classDatabase.at(id)();
+        if(classDatabase.count(id))
+		    return classDatabase[id]();
+        return nullptr;
 	}
 
 

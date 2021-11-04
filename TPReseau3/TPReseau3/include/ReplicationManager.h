@@ -16,6 +16,7 @@ namespace uqac::replication
 	private:
 		std::unordered_set<GameObject*> objectsReplicated;
 		LinkingContext linkingContext;
+
 		uqac::serializer::Serializer serializer;
 
 		void Update();

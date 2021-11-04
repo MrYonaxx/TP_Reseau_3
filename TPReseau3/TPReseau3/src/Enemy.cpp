@@ -5,6 +5,8 @@
 
 namespace uqac::networkGame
 {
+
+
 	Enemy::Enemy()
 	{
 		srand(time(NULL));
@@ -13,6 +15,8 @@ namespace uqac::networkGame
 
 		enemyType = EnemyTpe::Sbire;
 		life = rand() % 300;
+
+		classID = ClassID::EnemyID;
 	}
 
 	void Enemy::Reset()

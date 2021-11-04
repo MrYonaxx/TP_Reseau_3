@@ -6,10 +6,13 @@
 #include <string>
 #include <vector>
 #include "windows.h"
+#include "Enemy.h"
+#include "Player.h"
 
 using namespace std;
 using namespace uqac::networkLib;
 using namespace uqac::replication;
+using namespace uqac::networkGame;
 
 
 // =======================================  S E R V E R  =======================================
@@ -27,7 +30,7 @@ void CreatePlayer(shared_ptr<Connection> newConnection)
 	// Create Enemy
 	if (listConnection.size() >= 2) 
 	{
-		GameObject* enemy = ClassRegistry::GetInstance()->Create(ClassID::Enemy);
+		GameObject* enemy = ClassRegistry::GetInstance()->Create(ClassID::EnemyID);
 		// Add enemy to LinkingContext
 	}
 }
@@ -37,15 +40,23 @@ void RemovePlayer(shared_ptr<Connection> newConnection)
 	//listConnection.erase(newConnection);
 }
 
+void SendDataToAll() 
+{
+	std::string dataSerialized;
+	for (int i = 0; i < listConnection.size(); ++i)
+	{
+		listConnection[i]->Send(dataSerialized);
+	}
+}
 
 
-void Server(NetworkLib& net)
+void Server(NetworkLib& net, int protocol, std::string ip, int port)
 {
 	//Server
 	string username;
 	string message;
 
-	uqac::networkLib::ConfigCallback callbacks;
+	ConfigCallback callbacks;
 
 	callbacks.OnConnection = CreatePlayer;
 	callbacks.OnDisconnection = RemovePlayer;
@@ -59,6 +70,7 @@ void Server(NetworkLib& net)
 		// Si on appuis sur une touche on modifie tout
 		// On appel ReplicationManager Update
 		// On envois un msg à toutes les connection avec le contenu de Update
+		
 		Sleep(1);
 	}
 
@@ -78,7 +90,7 @@ void ConnectionLost(std::shared_ptr<Connection> connection)
 	// Abort all
 }
 
-void Client(NetworkLib& net)
+void Client(NetworkLib& net, int protocol, std::string ip, int port)
 {
 	string username;
 	string message;
@@ -117,6 +129,30 @@ void Client(NetworkLib& net)
 
 
 // ================================================  M A I N  ================================================
+std::function<GameObject* ()> createEnemy;
+std::function<GameObject* ()> createPlayer;
+
+Enemy* CreateGameObjectEnemy()
+{
+	std::cout << "Pouet pouet";
+	return new Enemy();
+}
+
+Player* CreateGameObjectPlayer()
+{
+	return new Player();
+}
+
+void RegisterClasses() 
+{
+	createEnemy = std::bind(CreateGameObjectEnemy);
+	Enemy enemy; // C'est cheum mais bon
+	ClassRegistry::GetInstance()->RegisterClassA(enemy, createEnemy);
+
+	/*createPlayer = std::bind(CreateGameObjectPlayer);
+	Player player;
+	ClassRegistry::GetInstance()->RegisterClassA(player, createPlayer);*/
+}
 
 int main(int argc, char** argv) //usage: -ip [IP] -port [PORT] -protocole [0=TCP;1=UDP]
 {
@@ -160,18 +196,19 @@ int main(int argc, char** argv) //usage: -ip [IP] -port [PORT] -protocole [0=TCP
 		return -1;
 	}
 
-	// Enregistrer les fonction pour créer les classes dans le Replication Manager
-	// ...
+	// Enregistre les fonction pour créer les classes dans le Replication Manager
+	RegisterClasses();
 
-
+	ClassRegistry::GetInstance()->Create(ClassID::PlayerID);
+	return 0;
 
 	if (answer == "0") {
 		// Client
-		Client(net);
+		Client(net, protocol, ip, port);
 	}
 	else if (answer == "1") {
 		// Server
-		Server(net);
+		Server(net, protocol, ip, port);
 	}
 
 	net.Close();

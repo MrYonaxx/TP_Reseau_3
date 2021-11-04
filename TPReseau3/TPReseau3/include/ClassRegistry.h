@@ -31,8 +31,8 @@ namespace uqac::replication
 	template<typename T>
 	inline void ClassRegistry::RegisterClass(T id, std::function<GameObject*()> creationMethod)
 	{
-		ClassID c = static_cast<GameObject>(id)::classID;
-		classDatabase.insert(c, creationMethod);
+		ClassID c = static_cast<GameObject>(id).classID;
+		classDatabase.insert(std::pair<ClassID, std::function<GameObject* ()>>(c, creationMethod));
 	}
 
 }
