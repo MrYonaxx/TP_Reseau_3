@@ -225,11 +225,11 @@ int main(int argc, char** argv) //usage: -ip [IP] -port [PORT] -protocole [0=TCP
 	}
 	std::cout << "Hello CMake." << std::endl;
 
-	// Init Network Lib
+	// Init Network Lib2222
 	uqac::networkLib::NetworkLib net;
 	int err = net.Initialize();
 	if (err == -1) {
-		std::cerr << "Failed to initialized";
+		std::cerr << "Failed to initialize";
 		return -1;
 	}
 

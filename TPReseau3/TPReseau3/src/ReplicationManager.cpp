@@ -46,7 +46,7 @@ namespace uqac::replication {
 
 	void ReplicationManager::Read(std::string buffer)
 	{
-		size_t maxSize = strlen(buffer.c_str());
+		size_t maxSize = buffer.size();
 		std::vector<char> data(buffer.begin(), buffer.end()); // Modifié deserializer pour que le buffer soit un string
 		Deserializer deserializer(data, maxSize);
 		

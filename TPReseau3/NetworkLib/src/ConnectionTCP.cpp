@@ -22,7 +22,7 @@ namespace uqac::networkLib
 
 	int ConnectionTCP::Send(std::string message)
 	{
-		int iResult = send(s, message.c_str(), (int)strlen(message.c_str()), 0);
+		int iResult = send(s, message.c_str(), message.size(), 0);
 		if (iResult == SOCKET_ERROR) {
 			std::cerr << "send failed : ", WSAGetLastError();
 			closesocket(s);
