@@ -36,7 +36,7 @@ namespace uqac::networkLib
 	{
 		int iResult;
 		do {
-			iResult = recv(s, buf, (int)strlen(buf), 0);
+			iResult = recv(s, buf, sizeof(buf), 0);
 			if (iResult > 0)
 			{
 				// Simplifiable

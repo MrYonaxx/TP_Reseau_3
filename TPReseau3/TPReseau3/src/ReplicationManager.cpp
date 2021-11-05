@@ -26,7 +26,7 @@ namespace uqac::replication {
 		{
 			// Serialiser identifiant objet (le int de linking context)
 			if (auto str = linkingContext.GetObject(elem)) {
-				serializer.Serialize(str.value()); // à test
+				serializer.Serialize(str.value());
 			}
 			else {
 				std::cout << "Houston on a un problème";
