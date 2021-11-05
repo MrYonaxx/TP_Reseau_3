@@ -1,7 +1,6 @@
 #include "Enemy.h"
 #include <stdlib.h>  
 #include <time.h>   
-#include "IntCompressor.h"  
 
 namespace uqac::networkGame
 {
@@ -11,7 +10,7 @@ namespace uqac::networkGame
 	{
 		srand(time(NULL));
 		position = Vector3(rand() % 1000 - 500, rand() % 1000 - 500, rand() % 100);
-		//rotation = Quat(rand(), rand(), rand());
+		rotation = Quaternion(-0.4545195, 0.5416753, 0.4545195, 0.5416753);
 
 		enemyType = EnemyTpe::Sbire;
 		life = rand() % 300;
@@ -35,8 +34,11 @@ namespace uqac::networkGame
 
 	void Enemy::Display()
 	{
+		std::cout << "Ennemy : ";
+		std::cout << '\n';
 		std::cout << "\nPosition : " << position.x << " " << position.y << " " << position.z;
 		std::cout << "\nRotation : " << rotation.x << " " << rotation.y << " " << rotation.z << " " << rotation.w;
+		std::cout << '\n';
 		std::cout << "\nLife : " << life;
 	}
 
@@ -44,13 +46,27 @@ namespace uqac::networkGame
 
 	void Enemy::Write(Serializer& s)
 	{
+		Vector3Compressor posCompressor(Vector3(-500, -500, 0), Vector3(500, 500, 100), 3);
+		posCompressor.Compressor(s, position);
+
+		QuaternionCompressor rotationCompressor;
+		rotationCompressor.Compressor(s, rotation);
+
 		IntCompressor lifeCompressor(0, 300);
 		lifeCompressor.Compressor(s, life);
 	}
 
 	void Enemy::Read(Deserializer& s)
 	{
+		Vector3Compressor posCompressor(Vector3(-500, -500, 0), Vector3(500, 500, 100), 3);
+		position = posCompressor.UnCompressor(s);
+
+		QuaternionCompressor rotationCompressor;
+		rotation = rotationCompressor.UnCompressor(s);
+
 		IntCompressor lifeCompressor(0, 300);
 		life = lifeCompressor.UnCompressor(s);
+
+		Display();
 	}
 }

@@ -6,6 +6,8 @@
 #include "Serializer.h"
 #include "Vector3.h"
 #include "Quaternion.h"
+#include "IntCompressor.h"
+#include "QuaternionCompressor.h"
 
 using namespace uqac::replication;
 
