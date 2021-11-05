@@ -20,6 +20,8 @@ namespace uqac::serializer
 		T Read();
 		char* Read(size_t size);
 
+		inline int GetIndex() { return index; }
+
 	};
 
 	template<typename T>

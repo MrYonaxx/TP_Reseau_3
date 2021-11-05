@@ -49,6 +49,14 @@ namespace uqac::serializer
 		std::memcpy(buffer.data() + index, buff, size);
 		index += size;
 	}
+
+
+	void Serializer::ClearBuffer()
+	{
+		buffer.clear();
+		index = 0;
+		buffer.reserve(0);
+	}
 }
 
 

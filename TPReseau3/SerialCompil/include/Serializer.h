@@ -27,6 +27,7 @@ namespace uqac::serializer
 
 		std::vector<char> GetBuffer();
 		int GetBufferSize();
+		void ClearBuffer();
 
 	private:
 		void Write(const char* buff, size_t size);

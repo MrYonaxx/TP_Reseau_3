@@ -17,7 +17,7 @@ namespace uqac::networkGame
 		Sbire = 2,
 	};
 
-	class Enemy : public GameObject
+	class Enemy : public uqac::replication::GameObject
 	{
 
 	public:

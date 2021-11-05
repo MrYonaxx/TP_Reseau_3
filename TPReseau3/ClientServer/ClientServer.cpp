@@ -8,70 +8,87 @@
 #include "windows.h"
 #include "Enemy.h"
 #include "Player.h"
+#include "ReplicationManager.h"
 
+// Ne plus faire ça c'est le prof qui l'a dit
+/*
 using namespace std;
 using namespace uqac::networkLib;
 using namespace uqac::replication;
 using namespace uqac::networkGame;
+*/
+
+int protocol = 0;
+uqac::replication::ReplicationManager replicationManager;
+//uqac::networkLib::NetworkLib networkLib;
+
 
 
 // =======================================  S E R V E R  =======================================
 
-vector<shared_ptr<Connection>> listConnection;
+std::vector<std::shared_ptr<uqac::networkLib::Connection>> listConnection;
 
-// Callback
-void CreatePlayer(shared_ptr<Connection> newConnection)
+void ReplicateObject()
 {
-	listConnection.push_back(newConnection);
-
-	// Create Player
-
-
-	// Create Enemy
-	if (listConnection.size() >= 2) 
-	{
-		GameObject* enemy = ClassRegistry::GetInstance()->Create(ClassID::EnemyID);
-		// Add enemy to LinkingContext
-	}
-}
-
-void RemovePlayer(shared_ptr<Connection> newConnection) 
-{
-	//listConnection.erase(newConnection);
-}
-
-void SendDataToAll() 
-{
-	std::vector<char> dataSerialized; // = replicationManager.Update();
+	std::vector<char> dataSerialized = replicationManager.Update(protocol);
 	std::string msg = std::string(dataSerialized.begin(), dataSerialized.end());
+
 	for (int i = 0; i < listConnection.size(); ++i)
 	{
 		listConnection[i]->Send(msg);
 	}
 }
 
+// Callback
+void CreatePlayer(std::shared_ptr<uqac::networkLib::Connection> newConnection)
+{
+	listConnection.push_back(newConnection);
 
-void Server(NetworkLib& net, int protocol, std::string ip, int port)
+	// Create Player
+	GameObject* player = ClassRegistry::GetInstance()->Create(ClassID::PlayerID);
+	replicationManager.AddObject(player);
+	std::cout << "Player created \n";
+
+	// Create Enemy
+	if (listConnection.size() >= 2) 
+	{
+		GameObject* enemy = ClassRegistry::GetInstance()->Create(ClassID::EnemyID);
+		replicationManager.AddObject(enemy);
+		std::cout << "Enemy created \n";
+	}
+
+
+	ReplicateObject();
+	std::cout << listConnection.size() << '\n';
+	std::cout << "On envoi tout \n";
+}
+
+void RemovePlayer(std::shared_ptr<uqac::networkLib::Connection> newConnection)
+{
+	listConnection.erase(std::find(listConnection.begin(), listConnection.end(), newConnection));
+	// Remove player 
+}
+
+
+void Server(uqac::networkLib::NetworkLib& net, std::string ip, int port)
 {
 	//Server
-	string username;
-	string message;
+	std::string message;
 
-	ConfigCallback callbacks;
+	uqac::networkLib::ConfigCallback callbacks;
 
 	callbacks.OnConnection = CreatePlayer;
 	callbacks.OnDisconnection = RemovePlayer;
-	//callbacks.OnMsgReceived = SendMessageAll;
 
 	if (net.Listen(ip, port, protocol, callbacks) < 0)
 		std::cout << "Oups";
 
 	while (true)
 	{
-		// Si on appuis sur une touche on modifie tout
-		// On appel ReplicationManager Update
-		// On envois un msg à toutes les connection avec le contenu de Update
-		
+		std::getline(std::cin, message);
+		ReplicateObject();
+		std::cout << "On envoi tout \n";
+
 		Sleep(1);
 	}
 
@@ -80,37 +97,50 @@ void Server(NetworkLib& net, int protocol, std::string ip, int port)
 
 
 
+
+
+
+
 // =======================================  C L I E N T  =======================================
-void Deserialize(std::shared_ptr<Connection> connection) 
+void DataReceived(std::shared_ptr<uqac::networkLib::Connection> data)
 {
-	std::string msg = connection->msg;
+	std::cout << "J'ai reçu un truc ! \n";
+	std::string msg = data->msg;
+	replicationManager.Read(msg);
 }
 
-void ConnectionLost(std::shared_ptr<Connection> connection)
+void ConnectionLost(std::shared_ptr<uqac::networkLib::Connection> connection)
 {
+	std::cout << "Conection perdue";
 	// Abort all
 }
 
-void Client(NetworkLib& net, int protocol, std::string ip, int port)
+void Client(uqac::networkLib::NetworkLib& net, std::string ip, int port)
 {
-	string username;
-	string message;
+	std::string username;
+	std::string message;
 
-	cout << "Username ?\n";
+	std::cout << "Username ?\n";
 	std::getline(std::cin, username);
-	//cin >> username;
 
 	// Callbacks
-	ConfigCallback callbacks;
-	callbacks.OnMsgReceived = Deserialize;
+	uqac::networkLib::ConfigCallback callbacks;
+	callbacks.OnMsgReceived = DataReceived;
 	callbacks.OnDisconnection = ConnectionLost;
 
 	//Connection au serveur
-	std::shared_ptr<Connection> connection = net.Connect(ip, port, protocol, callbacks);
+	std::shared_ptr<uqac::networkLib::Connection> connection = net.Connect(ip, port, protocol, callbacks);
 	if (connection == nullptr)
 	{
-		cout << "Argh\n";
+		std::cout << "Argh\n";
 		return;
+	}
+
+	std::cout << "Connection réussi\n";
+	while (true)
+	{
+		//std::getline(std::cin, message);
+		Sleep(1);
 	}
 
 	//Chat
@@ -129,46 +159,51 @@ void Client(NetworkLib& net, int protocol, std::string ip, int port)
 
 
 
+
+
+
+
+
+
 // ================================================  M A I N  ================================================
-std::function<GameObject* ()> createEnemy;
-std::function<GameObject* ()> createPlayer;
+std::function<uqac::replication::GameObject* ()> createEnemy;
+std::function<uqac::replication::GameObject* ()> createPlayer;
 
-Enemy* CreateGameObjectEnemy()
+uqac::networkGame::Enemy* CreateGameObjectEnemy()
 {
-
-	std::cout << "Pouet pouet";
-	return new Enemy();
+	return new uqac::networkGame::Enemy();
 }
 
-Player* CreateGameObjectPlayer()
+uqac::networkGame::Player* CreateGameObjectPlayer()
 {
-	return new Player();
+	return new uqac::networkGame::Player();
 }
 
 void RegisterClasses() 
 {
 	createEnemy = std::bind(CreateGameObjectEnemy);
-	Enemy enemy; // C'est cheum mais bon
+	uqac::networkGame::Enemy enemy; // C'est cheum mais bon
 	ClassRegistry::GetInstance()->RegisterClassA(enemy, createEnemy);
 
-	/*createPlayer = std::bind(CreateGameObjectPlayer);
-	Player player;
-	ClassRegistry::GetInstance()->RegisterClassA(player, createPlayer);*/
+
+	createPlayer = std::bind(CreateGameObjectPlayer);
+	uqac::networkGame::Player player;
+	ClassRegistry::GetInstance()->RegisterClassA(player, createPlayer);
 }
 
 int main(int argc, char** argv) //usage: -ip [IP] -port [PORT] -protocole [0=TCP;1=UDP]
 {
-	string answer;
+	std::string answer;
 
 	// Client ou Server
-	cout << "Client(0) ou Server(1) ?";
+	std::cout << "Client(0) ou Server(1) ?";
 	std::getline(std::cin, answer);
 
 	// Initialization Reseau
 	// Default parameter
-	int protocol = 0;
+	protocol = 0;
 	int port = 8888;
-	string ip = "127.0.0.1";
+	std::string ip = "127.0.0.1";
 
 	//Validate parameters
 	if (argc == 7)
@@ -185,32 +220,30 @@ int main(int argc, char** argv) //usage: -ip [IP] -port [PORT] -protocole [0=TCP
 	}
 	else if (argc > 1)
 	{
-		cout << "usage: -ip [IP] -port [PORT] -protocole [0=TCP;1=UDP]\n";
+		std::cout << "usage: -ip [IP] -port [PORT] -protocole [0=TCP;1=UDP]\n";
 		return -1;
 	}
-	cout << "Hello CMake." << endl;
+	std::cout << "Hello CMake." << std::endl;
 
 	// Init Network Lib
-	NetworkLib net;
+	uqac::networkLib::NetworkLib net;
 	int err = net.Initialize();
 	if (err == -1) {
-		cerr << "Failed to initialized";
+		std::cerr << "Failed to initialized";
 		return -1;
 	}
 
 	// Enregistre les fonction pour créer les classes dans le Replication Manager
+	replicationManager = ReplicationManager();
 	RegisterClasses();
-
-	//ClassRegistry::GetInstance()->Create(ClassID::PlayerID);
-	return 0;
 
 	if (answer == "0") {
 		// Client
-		Client(net, protocol, ip, port);
+		Client(net, ip, port);
 	}
 	else if (answer == "1") {
 		// Server
-		Server(net, protocol, ip, port);
+		Server(net, ip, port);
 	}
 
 	net.Close();
