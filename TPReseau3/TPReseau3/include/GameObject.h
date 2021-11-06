@@ -22,6 +22,9 @@ namespace uqac::replication
 
 		ClassID classID;
 
+		virtual void Randomize();
+		virtual void Display();
+
 		virtual void Write(Serializer&);
 		virtual void Read(Deserializer&);
 		virtual void Destroy();

@@ -9,13 +9,18 @@ namespace uqac::networkGame
 	Enemy::Enemy()
 	{
 		srand(time(NULL));
+		Randomize();
+		classID = ClassID::EnemyID;
+	}
+
+	void Enemy::Randomize()
+	{
+		srand(time(NULL));
 		position = Vector3(rand() % 1000 - 500, rand() % 1000 - 500, rand() % 100);
 		rotation = Quaternion(-0.4545195, 0.5416753, 0.4545195, 0.5416753);
 
 		enemyType = EnemyTpe::Sbire;
 		life = rand() % 300;
-
-		classID = ClassID::EnemyID;
 	}
 
 	void Enemy::Reset()
@@ -34,6 +39,8 @@ namespace uqac::networkGame
 
 	void Enemy::Display()
 	{
+		std::cout << '\n';
+		std::cout << "=============================\n";
 		std::cout << "Ennemy : ";
 		std::cout << '\n';
 		std::cout << "\nPosition : " << position.x << " " << position.y << " " << position.z;

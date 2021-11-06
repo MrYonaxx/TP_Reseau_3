@@ -26,8 +26,9 @@ namespace uqac::networkGame
 		Enemy();
 
 		void Reset();
-		void Display();
+		void Display() override;
 
+		void Randomize() override;
 		void Write(Serializer&) override;
 		void Read(Deserializer&) override;
 		//void Destroy() override;

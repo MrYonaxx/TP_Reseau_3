@@ -13,6 +13,14 @@ namespace uqac::networkGame
 		std::copy(n, n + 7, name);
 
 		srand(time(NULL));
+		Randomize();
+
+		classID = uqac::replication::ClassID::PlayerID;
+	}
+
+	void Player::Randomize()
+	{
+
 		float r = (float)rand() / RAND_MAX;
 		position = Vector3((rand() % 1000 - 500) + r, (rand() % 1000 - 500) + r, (rand() % 100) + r);
 
@@ -27,8 +35,6 @@ namespace uqac::networkGame
 		life = rand() % 300;
 		armor = rand() % 50;
 		money = (rand() % 200000 - 100000) + r;
-
-		classID = uqac::replication::ClassID::PlayerID;
 	}
 
 	void Player::Reset()
@@ -58,6 +64,7 @@ namespace uqac::networkGame
 	void Player::Display()
 	{
 		std::cout << '\n';
+		std::cout << "=============================\n";
 		std::cout << name;
 		std::cout << "\nPosition : " << position.x << " " << position.y << " " << position.z;
 		std::cout << "\nRotation : " << rotation.x << " " << rotation.y << " " << rotation.z << " " << rotation.w;

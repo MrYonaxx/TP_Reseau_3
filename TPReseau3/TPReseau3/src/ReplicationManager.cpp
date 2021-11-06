@@ -92,4 +92,24 @@ namespace uqac::replication {
 		linkingContext.AddGameObject(obj);
 		objectsReplicated.insert(obj);
 	}
+
+	void ReplicationManager::RemoveObject(GameObject* obj)
+	{
+		linkingContext.DeleteGameObject(obj);
+		objectsReplicated.erase(obj);
+	}
+
+
+
+	void ReplicationManager::RandomizeAll()
+	{
+		for (auto elem : objectsReplicated)
+			elem->Randomize();
+	}
+
+	void ReplicationManager::DisplayAll()
+	{
+		for (auto elem : objectsReplicated)
+			elem->Display();
+	}
 }

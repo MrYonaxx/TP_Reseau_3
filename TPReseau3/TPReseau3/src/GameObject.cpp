@@ -2,6 +2,13 @@
 
 namespace uqac::replication 
 {
+	void GameObject::Randomize()
+	{
+	}
+	void GameObject::Display()
+	{
+	}
+
 	void GameObject::Write(Serializer& serializer)
 	{
 

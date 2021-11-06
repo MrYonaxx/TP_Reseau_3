@@ -16,6 +16,12 @@ namespace uqac::replication
 		std::vector<char> Update(int protocol);
 		void Read(std::string buffer);
 		void AddObject(GameObject* obj);
+		void RemoveObject(GameObject* obj);
+
+
+		// à bouger dans un vrai projet
+		void RandomizeAll();
+		void DisplayAll();
 
 	private:
 		int replicationID = 0;

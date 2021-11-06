@@ -27,8 +27,9 @@ namespace uqac::networkGame
 		Player();
 
 		void Reset();
-		void Display();
 
+		void Display() override;
+		void Randomize() override;
 		void Write(uqac::serializer::Serializer& s) override;
 		void Read(Deserializer& s) override;
 

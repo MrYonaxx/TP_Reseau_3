@@ -10,7 +10,7 @@
 #include "Player.h"
 #include "ReplicationManager.h"
 
-// Ne plus faire ça c'est le prof qui l'a dit
+// Ne plus faire ça, c'est le prof qui l'a dit
 /*
 using namespace std;
 using namespace uqac::networkLib;
@@ -20,16 +20,20 @@ using namespace uqac::networkGame;
 
 int protocol = 0;
 uqac::replication::ReplicationManager replicationManager;
-//uqac::networkLib::NetworkLib networkLib;
+
 
 
 
 // =======================================  S E R V E R  =======================================
 
 std::vector<std::shared_ptr<uqac::networkLib::Connection>> listConnection;
+std::vector<GameObject*> gameObjectsConnection; // Game objet lié à la connection, objets à retirer quand on perd la connection assigné
 
 void ReplicateObject()
 {
+	replicationManager.RandomizeAll();
+	replicationManager.DisplayAll();
+
 	std::vector<char> dataSerialized = replicationManager.Update(protocol);
 	std::string msg = std::string(dataSerialized.begin(), dataSerialized.end());
 
@@ -47,26 +51,39 @@ void CreatePlayer(std::shared_ptr<uqac::networkLib::Connection> newConnection)
 	// Create Player
 	GameObject* player = ClassRegistry::GetInstance()->Create(ClassID::PlayerID);
 	replicationManager.AddObject(player);
-	std::cout << "Player created \n";
+	gameObjectsConnection.push_back(player);
+	std::cout << "Player created\n";
 
 	// Create Enemy
 	if (listConnection.size() >= 2) 
 	{
 		GameObject* enemy = ClassRegistry::GetInstance()->Create(ClassID::EnemyID);
 		replicationManager.AddObject(enemy);
-		std::cout << "Enemy created \n";
+		std::cout << "Enemy created\n";
 	}
 
-
 	ReplicateObject();
-	std::cout << listConnection.size() << '\n';
-	std::cout << "On envoi tout \n";
 }
 
+// Callback
 void RemovePlayer(std::shared_ptr<uqac::networkLib::Connection> newConnection)
 {
+	auto it = std::find(listConnection.begin(), listConnection.end(), newConnection);
+	int index = it - listConnection.begin();
 	listConnection.erase(std::find(listConnection.begin(), listConnection.end(), newConnection));
-	// Remove player 
+
+	// Remove Game object du replication manager et du linking context
+	GameObject* objToRemove = gameObjectsConnection[index];
+	replicationManager.RemoveObject(objToRemove);
+	gameObjectsConnection.erase(std::find(gameObjectsConnection.begin(), gameObjectsConnection.end(), objToRemove));
+
+	// Send message aux autres connection pour leur dire de supprimer le player
+	/*for (int i = 0; i < listConnection.size(); ++i)
+	{
+		listConnection[i]->Send(msg);
+	}*/
+
+	ReplicateObject();
 }
 
 
@@ -83,11 +100,12 @@ void Server(uqac::networkLib::NetworkLib& net, std::string ip, int port)
 	if (net.Listen(ip, port, protocol, callbacks) < 0)
 		std::cout << "Oups";
 
+	std::cout << "\nPress enter to Randomize and send objects.\n";
 	while (true)
 	{
 		std::getline(std::cin, message);
 		ReplicateObject();
-		std::cout << "On envoi tout \n";
+		//std::cout << "On update \n";
 
 		Sleep(1);
 	}
@@ -102,6 +120,8 @@ void Server(uqac::networkLib::NetworkLib& net, std::string ip, int port)
 
 
 // =======================================  C L I E N T  =======================================
+
+// Callback
 void DataReceived(std::shared_ptr<uqac::networkLib::Connection> data)
 {
 	std::cout << "J'ai reçu un truc ! \n";
@@ -109,6 +129,7 @@ void DataReceived(std::shared_ptr<uqac::networkLib::Connection> data)
 	replicationManager.Read(msg);
 }
 
+// Callback
 void ConnectionLost(std::shared_ptr<uqac::networkLib::Connection> connection)
 {
 	std::cout << "Conection perdue";
@@ -139,22 +160,8 @@ void Client(uqac::networkLib::NetworkLib& net, std::string ip, int port)
 	std::cout << "Connection réussi\n";
 	while (true)
 	{
-		//std::getline(std::cin, message);
 		Sleep(1);
 	}
-
-	//Chat
-	/*cout << "/exit pour quitter\n";
-	while (true) {
-		std::getline(std::cin, message);
-		//cin >> message;
-		if (message == "/exit")
-			break;
-		message = "[" + username + "]:" + message;
-		connection->Send(message.c_str());
-		std::cout << message;
-		std::cout << '\n';
-	}*/
 }
 
 
@@ -199,6 +206,9 @@ int main(int argc, char** argv) //usage: -ip [IP] -port [PORT] -protocole [0=TCP
 	std::cout << "Client(0) ou Server(1) ?";
 	std::getline(std::cin, answer);
 
+
+
+	// ! \ Note : Bouger cette partie dans le network lib
 	// Initialization Reseau
 	// Default parameter
 	protocol = 0;
@@ -224,6 +234,9 @@ int main(int argc, char** argv) //usage: -ip [IP] -port [PORT] -protocole [0=TCP
 		return -1;
 	}
 	std::cout << "Hello CMake." << std::endl;
+	// ! \ 
+	
+
 
 	// Init Network Lib2222
 	uqac::networkLib::NetworkLib net;

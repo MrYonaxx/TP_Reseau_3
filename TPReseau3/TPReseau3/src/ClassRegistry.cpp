@@ -11,8 +11,6 @@ namespace uqac::replication
         return nullptr;
 	}
 
-
-
     ClassRegistry* ClassRegistry::GetInstance()
     {
         if (Instance == 0)
